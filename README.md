@@ -1,196 +1,17 @@
-# Team Task Management Application
+# TaskFlow — Team Task Management Application
 
 A full-stack collaborative task management web app built with React, FastAPI, PostgreSQL, and SQLAlchemy ORM.
 
 ---
 
-## 🏗️ Architecture
-
-taskflow/
-├── backend/             # FastAPI application
-│   ├── app/
-│   │   ├── api/
-│   │   │   ├── deps.py          # Auth dependencies
-│   │   │   └── routes/
-│   │   │       ├── auth.py      # Signup / Login / Me
-│   │   │       ├── projects.py  # Project CRUD + members
-│   │   │       ├── tasks.py     # Task CRUD
-│   │   │       └── dashboard.py # Stats & analytics
-│   │   ├── core/
-│   │   │   ├── config.py        # Settings (pydantic-settings)
-│   │   │   └── security.py      # JWT + bcrypt
-│   │   ├── db/
-│   │   │   └── session.py       # SQLAlchemy engine + get_db
-│   │   ├── models/
-│   │   │   └── models.py        # User, Project, ProjectMember, Task
-│   │   ├── schemas/
-│   │   │   └── schemas.py       # Pydantic request/response schemas
-│   │   └── main.py              # FastAPI app + CORS + routers
-│   ├── requirements.txt
-│   └── Dockerfile
-│
-├── frontend/            # React + Vite application
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── layout/Layout.jsx   # Sidebar nav
-│   │   │   └── ui/                 # Reusable UI components
-│   │   ├── pages/
-│   │   │   ├── LoginPage.jsx
-│   │   │   ├── SignupPage.jsx
-│   │   │   ├── DashboardPage.jsx   # Charts + stats
-│   │   │   ├── ProjectsPage.jsx    # Project list
-│   │   │   └── ProjectDetailPage.jsx # Kanban + members
-│   │   ├── services/api.js         # Axios + all API calls
-│   │   └── store/AuthContext.jsx   # Auth state
-│   ├── Dockerfile
-│   └── nginx.conf
-│
-└── docker-compose.yml
+## 🔗 Live Demo
+- **Frontend:** https://teamtaskmanager-production-813d.up.railway.app
+- **Backend API:** https://noble-possibility-production-55ee.up.railway.app
+- **API Docs:** https://noble-possibility-production-55ee.up.railway.app/docs
 
 ---
 
-## 🗄️ Database Schema
-
-```
-users
-  id, name, email, hashed_password, is_active, created_at
-
-projects
-  id, name, description, creator_id → users.id, created_at
-
-project_members
-  id, project_id → projects.id, user_id → users.id, role (admin|member), joined_at
-
-tasks
-  id, title, description, status (todo|in_progress|done),
-  priority (low|medium|high|urgent), due_date,
-  project_id → projects.id, assignee_id → users.id,
-  creator_id → users.id, created_at, updated_at
-```
-
----
-
-## 🔐 Role-Based Access
-
-| Action                        | Admin | Member |
-|-------------------------------|-------|--------|
-| Create/delete tasks           | Y    | N     |
-| Assign tasks to members       | Y    | N     |
-| Update any task               | Y    | N     |
-| Update status of own task     | Y    | Y     |
-| View all project tasks        | Y    | N     |
-| View assigned tasks only      | Y    | Y     |
-| Add/remove project members    | Y    | N     |
-| Delete project                | Y    | N     |
-
----
-
-##  Quick Start
-
-# App runs at:
-# Frontend: http://localhost:3000
-# Backend API: http://localhost:8000
-# API Docs: http://localhost:8000/docs
-```
-
-### Option 2: Local development
-
-**Backend:**
-cd backend
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# Install deps
-pip install -r requirements.txt
-
-# Create PostgreSQL database
-createdb taskflow
-
-# Configure environment
-cp .env.example .env
-# Edit .env with your DB credentials
-
-# Run server
-uvicorn app.main:app --reload --port 8000
-```
-
-**Frontend:**
-```bash
-cd frontend
-
-# Install deps
-npm install
-
-# Run dev server (proxies /api → localhost:8000)
-npm run dev
-# App runs at http://localhost:3000
-```
-
----
-
-## 🔌 API Endpoints
-
-### Auth
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/signup` | Register new user |
-| POST | `/api/auth/login` | Login, get JWT token |
-| GET | `/api/auth/me` | Get current user |
-
-### Projects
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/projects/` | List my projects |
-| POST | `/api/projects/` | Create project |
-| GET | `/api/projects/{id}` | Get project |
-| PUT | `/api/projects/{id}` | Update project (admin) |
-| DELETE | `/api/projects/{id}` | Delete project (admin) |
-| POST | `/api/projects/{id}/members` | Add member (admin) |
-| DELETE | `/api/projects/{id}/members/{uid}` | Remove member (admin) |
-| PUT | `/api/projects/{id}/members/{uid}/role` | Update member role (admin) |
-
-### Tasks
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/projects/{id}/tasks` | List project tasks |
-| POST | `/api/projects/{id}/tasks` | Create task (admin) |
-| GET | `/api/tasks/{id}` | Get task |
-| PUT | `/api/tasks/{id}` | Update task |
-| DELETE | `/api/tasks/{id}` | Delete task (admin) |
-
-### Dashboard
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET    | `/api/dashboard/` | Get stats & analytics |
-
----
-
-## 🔑 Authentication
-
-All protected routes require:
-```
-Authorization: Bearer <JWT_TOKEN>
-```
-
-Tokens are valid for 7 days by default.
-
----
-
-## ⚙️ Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `DATABASE_URL` | `postgresql://...` | PostgreSQL connection string |
-| `SECRET_KEY` | — | JWT signing secret (change this!) |
-| `ALGORITHM` | `HS256` | JWT algorithm |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | `10080` | Token expiry (7 days) |
-| `BACKEND_CORS_ORIGINS` | `[...]` | Allowed CORS origins |
-
----
-
-## 📋 Tech Stack
+## 🏗️ Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
@@ -198,7 +19,167 @@ Tokens are valid for 7 days by default.
 | Backend | FastAPI, Uvicorn, Python 3.12 |
 | ORM | SQLAlchemy 2.0 |
 | Database | PostgreSQL 16 |
-| Auth | JWT (python-jose), bcrypt (passlib) |
-| Validation | Pydantic v2 |
-| Deployment | Docker, Docker Compose, Nginx |
- 
+| Auth | JWT (python-jose), bcrypt |
+| Deployment | Railway |
+
+---
+
+## 📋 Features
+
+- JWT Authentication (Signup/Login)
+- Create and manage Projects
+- Role Based Access (Admin/Member)
+- Kanban Board (To Do / In Progress / Done)
+- Task assignment with priority and due dates
+- Dashboard with charts and statistics
+- Overdue task tracking
+
+---
+
+## Local Setup (VS Code)
+
+### Requirements
+- Python 3.12
+- Node.js 18+
+- PostgreSQL
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/megha-singh23/TaskFlow.git
+cd TaskFlow
+```
+
+### 2. Create PostgreSQL Database
+Open pgAdmin and run:
+```sql
+CREATE DATABASE taskflow;
+```
+
+### 3. Setup Backend
+```bash
+cd backend
+py -3.12 -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+Create `.env` file inside `backend/` folder:
+```
+DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@localhost:5432/taskflow
+SECRET_KEY=taskflow-super-secret-key-2024
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=10080
+BACKEND_CORS_ORIGINS=["http://localhost:3000"]
+```
+
+Run backend:
+```bash
+uvicorn app.main:app --reload --port 8000
+```
+
+> Backend running at http://localhost:8000
+> API Docs at http://localhost:8000/docs
+
+### 4. Setup Frontend
+Open a second terminal:
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+> Frontend running at http://localhost:3000
+
+---
+
+##  Deployment (Railway)
+
+### 1. Push Code to GitHub
+```bash
+git add .
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/YOUR_USERNAME/TaskFlow.git
+git push -u origin main
+```
+
+### 2. Create Railway Account
+- Go to railway.app
+- Sign up with GitHub
+
+### 3. Create New Project
+- Click New Project
+- Select Deploy from GitHub repo
+- Select your TaskFlow repository
+
+### 4. Add PostgreSQL Database
+- Click New → Database → Add PostgreSQL
+- Click on Postgres service → Variables tab
+- Copy the DATABASE_URL value
+
+### 5. Deploy Backend
+- Click New → GitHub Repo → select TaskFlow
+- Go to Settings → set Root Directory to `backend`
+- Go to Variables → add:
+```
+DATABASE_URL=your-railway-postgres-url
+SECRET_KEY=taskflow-secret-key-2024
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=10080
+BACKEND_CORS_ORIGINS=["*"]
+PORT=8000
+```
+- Go to Settings → Networking → Generate Domain → set port 8000
+- Copy your backend URL
+
+### 6. Deploy Frontend
+- Update `frontend/src/services/api.js` baseURL to your backend URL
+- Click New → GitHub Repo → select TaskFlow again
+- Go to Settings → set Root Directory to `frontend`
+- Go to Settings → Networking → Generate Domain → set port 80
+- Frontend is now live
+
+---
+
+## 🗄️ Database Schema
+
+```
+users           → id, name, email, hashed_password
+projects        → id, name, description, creator_id
+project_members → project_id, user_id, role (admin/member)
+tasks           → id, title, status, priority, due_date, assignee_id, project_id
+```
+
+---
+
+## 🔐 Role Based Access
+
+| Action | Admin | Member |
+|--------|-------|--------|
+| Create/delete tasks | Y | N |
+| Assign tasks | Y | N |
+| View all tasks | Y | N |
+| View own tasks | Y | Y |
+| Update task status | Y | Y |
+| Add/remove members | Y | N |
+
+---
+
+## 🔌 API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | /api/auth/signup | Register |
+| POST | /api/auth/login | Login |
+| GET | /api/auth/me | Get current user |
+| GET | /api/projects/ | List projects |
+| POST | /api/projects/ | Create project |
+| PUT | /api/projects/{id} | Update project |
+| DELETE | /api/projects/{id} | Delete project |
+| POST | /api/projects/{id}/members | Add member |
+| DELETE | /api/projects/{id}/members/{uid} | Remove member |
+| GET | /api/projects/{id}/tasks | List tasks |
+| POST | /api/projects/{id}/tasks | Create task |
+| PUT | /api/tasks/{id} | Update task |
+| DELETE | /api/tasks/{id} | Delete task |
+| GET | /api/dashboard/ | Get stats |
